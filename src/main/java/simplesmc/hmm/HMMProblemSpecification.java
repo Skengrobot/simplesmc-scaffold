@@ -22,17 +22,51 @@ import simplesmc.pmcmc.WithSignature;
  * @author Alexandre Bouchard (alexandre.bouchard@gmail.com)
  *
  */
-public class HMMProblemSpecification
+public class HMMProblemSpecification implements ProblemSpecification<Integer>
   
 {
-  private final HMMParams parameters;
+  private final ToyHMMParams parameters;
   private final List<Integer> observations;
   
-  public HMMProblemSpecification(HMMParams parameters, List<Integer> observations)
+  public HMMProblemSpecification(ToyHMMParams parameters, List<Integer> observations)
   {
     this.parameters = parameters;
     this.observations = observations;
   }
   
+  /**
+   * Computes a proposal and the LOG weight update for that proposed particle.
+   * 
+   * @param currentSmcIteration The index of particle currentParticle (0, 1, 2, ..)
+   * @param random
+   * @param currentParticle
+   * @return A pair of (1) LOG weight update, and (2) proposed particle
+   */
+  public Pair<Double, Integer>  proposeNext(int currentSmcIteration, Random random, Integer currentParticle) {
+	  int proposedParticle = this.parameters.sampleTransition(random, currentParticle);
+	  double weightUpdate = this.parameters.sampleEmission(random, proposedParticle);
+	  Pair<Double, Integer> update= Pair.of(weightUpdate, proposedParticle);
+	  return update;
+  }
+  /**
+   * 
+   * @param random
+   * @return A pair of (1) LOG weight update, and (2) proposed particle for the zeroth iteration
+   */
+  public Pair<Double, Integer>  proposeInitial(Random random) {
+	  Integer particle = this.parameters.sampleInitial(random);
+	  int emission = this.parameters.sampleEmission(random, particle);
+	  Double weight = this.parameters.emissionLogPr(particle,emission);
+	  Pair<Double, Integer> initialProposal = Pair.of(weight, particle); 
+	  return initialProposal;
+  }
   
+  /**
+   * @return Number of iterations, including the initial step. For example, this is the length of
+   *   the chain in an HMM context
+   */
+  public int nIterations() {
+	  return this.observations.size(); 
+  }
+   
 }

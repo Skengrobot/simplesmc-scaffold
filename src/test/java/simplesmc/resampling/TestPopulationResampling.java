@@ -7,6 +7,8 @@ import org.apache.commons.lang3.time.StopWatch;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.math.*;
+
 import bayonet.distributions.NegativeBinomial;
 import bayonet.distributions.Poisson;
 import bayonet.smc.ParticlePopulation;
@@ -59,7 +61,12 @@ public class TestPopulationResampling
        * - this will run the test called testIS() below
        * - you should see a green bar
        */
-      throw new RuntimeException(); 
+    	int poissonSample = Poisson.generate(random, proposalMean);
+    	double weight = NegativeBinomial.logDensity(poissonSample, r, p)-Poisson.logDensity(poissonSample, proposalMean);
+    	logWeights[particleIndex] = weight;
+    	particles.add(poissonSample);
+    	
+      //throw new RuntimeException(); 
     }
     
     // This exponentiates and normalizes the weights (destructively, meaning that the input array is
@@ -124,6 +131,32 @@ public class TestPopulationResampling
    *   creating a vector of weights all equal to 1/N
    * - you can also use population.sample(..)
    */
+  public static ParticlePopulation<Integer> naiveResample(Random random, ParticlePopulation<Integer> population) { 
+	  ArrayList<Integer> sampledParticles = new ArrayList<>();
+	  int nParticles = population.nParticles();
+	  for (int i=0; i<nParticles; i++)
+	  	sampledParticles.add(population.sample(random));
+	  
+	  return ParticlePopulation.buildEquallyWeighted(sampledParticles, 0.0);
+	  
+  }
   
+  // Test for resampling function
+  @Test
+  public void testResampling() {
+    int nParticles = 1_000_000;
+    Random random = new Random(1);
+    ParticlePopulation<Integer> population = negativeBinomialPopulation(random, nParticles);
+    
+    ParticlePopulation<Integer> resampledPopulation = naiveResample(random, population);
+    // check that the mean of the population matches the analytic mean
+    double exact  = exactMean();
+    double approx = approximateMean(resampledPopulation);
+    System.out.println("exact mean  = " + exact);
+    System.out.println("approx mean = " + approx);
+    Assert.assertTrue(Math.abs(exact - approx)/exact < 0.05);
+	  
+	  //throw new RuntimeException();
+  }
   
 }
