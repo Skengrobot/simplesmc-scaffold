@@ -135,7 +135,8 @@ public class TestPopulationResampling
 	  ArrayList<Integer> sampledParticles = new ArrayList<>();
 	  int nParticles = population.nParticles();
 	  for (int i=0; i<nParticles; i++)
-	  	sampledParticles.add(population.sample(random));
+		  System.out.println("Iteration number: " + i);
+		  sampledParticles.add(population.sample(random));
 	  
 	  return ParticlePopulation.buildEquallyWeighted(sampledParticles, 0.0);
 	  
