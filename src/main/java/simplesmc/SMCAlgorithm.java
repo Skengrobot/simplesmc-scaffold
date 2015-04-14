@@ -1,5 +1,6 @@
 package simplesmc;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 import java.util.SplittableRandom;
@@ -49,7 +50,6 @@ public class SMCAlgorithm<P>
        * Fill this with both the re-sampling and proposal
        */
       
-      throw new RuntimeException(); 
     }
     
     return currentPopulation;
@@ -68,8 +68,25 @@ public class SMCAlgorithm<P>
   private ParticlePopulation<P> propose(final ParticlePopulation<P> currentPopulation, final int currentIteration)
   {
     final boolean isInitial = currentPopulation == null;
+    ArrayList<P> particles = new ArrayList<>();
+    double[] weights = new double[this.options.nParticles];
     
-    throw new RuntimeException(); 
+    if(isInitial) {
+    	for(int i=0; i<this.options.nParticles; i++){
+    		Pair<Double, P> newParticle = this.proposal.proposeInitial(randoms[i]);
+    		particles.add(newParticle.getRight());
+    		weights[i] = newParticle.getLeft();
+    	}
+    }
+    
+    else {
+    	for(int i=0; i<this.options.nParticles; i++){
+    		Pair<Double, P> newParticle= this.proposal.proposeNext(currentIteration, randoms[i], currentPopulation.particles.get(i));
+    		particles.add(newParticle.getRight());
+    		weights[i] = newParticle.getLeft();
+    	}
+    }
+    return ParticlePopulation.buildDestructivelyFromLogWeights(weights, particles, 0.0);
   }
 
   public SMCAlgorithm(ProblemSpecification<P> proposal, SMCOptions options)
