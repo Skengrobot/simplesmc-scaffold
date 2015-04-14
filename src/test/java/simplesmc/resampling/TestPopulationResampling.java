@@ -80,6 +80,7 @@ public class TestPopulationResampling
   @Test
   public void testIS()
   {
+    System.out.println("Testing IS");
     int nParticles = 1_000_000;
     Random random = new Random(1);
     ParticlePopulation<Integer> population = negativeBinomialPopulation(random, nParticles);
@@ -134,9 +135,9 @@ public class TestPopulationResampling
   public static ParticlePopulation<Integer> naiveResample(Random random, ParticlePopulation<Integer> population) { 
 	  ArrayList<Integer> sampledParticles = new ArrayList<>();
 	  int nParticles = population.nParticles();
-	  for (int i=0; i<nParticles; i++)
-		  System.out.println("Iteration number: " + i);
+	  for (int i=0; i<nParticles; i++) {
 		  sampledParticles.add(population.sample(random));
+	  }
 	  
 	  return ParticlePopulation.buildEquallyWeighted(sampledParticles, 0.0);
 	  
@@ -145,7 +146,8 @@ public class TestPopulationResampling
   // Test for resampling function
   @Test
   public void testResampling() {
-    int nParticles = 1_000_000;
+    System.out.println("Testing resampling");
+    int nParticles = 10000;
     Random random = new Random(1);
     ParticlePopulation<Integer> population = negativeBinomialPopulation(random, nParticles);
     
