@@ -9,6 +9,7 @@ import java.util.stream.IntStream;
 import org.apache.commons.lang3.tuple.Pair;
 
 import bayonet.smc.ParticlePopulation;
+import bayonet.smc.ResamplingScheme;
 
 
 /**
@@ -49,7 +50,8 @@ public class SMCAlgorithm<P>
       /*
        * Fill this with both the re-sampling and proposal
        */
-      
+    	currentPopulation = propose(currentPopulation, currentIteration);
+    	currentPopulation = currentPopulation.resample(randoms[0], ResamplingScheme.MULTINOMIAL);
     }
     
     return currentPopulation;
@@ -71,22 +73,26 @@ public class SMCAlgorithm<P>
     ArrayList<P> particles = new ArrayList<>();
     double[] weights = new double[this.options.nParticles];
     
+    double logScaling;
+    
     if(isInitial) {
     	for(int i=0; i<this.options.nParticles; i++){
     		Pair<Double, P> newParticle = this.proposal.proposeInitial(randoms[i]);
     		particles.add(newParticle.getRight());
     		weights[i] = newParticle.getLeft();
     	}
+    	logScaling = 0.0;
     }
     
     else {
     	for(int i=0; i<this.options.nParticles; i++){
     		Pair<Double, P> newParticle= this.proposal.proposeNext(currentIteration, randoms[i], currentPopulation.particles.get(i));
     		particles.add(newParticle.getRight());
-    		weights[i] = newParticle.getLeft();
+    		weights[i] = Math.log(currentPopulation.getNormalizedWeight(i)) + newParticle.getLeft();
     	}
+    	logScaling = currentPopulation.logScaling;
     }
-    return ParticlePopulation.buildDestructivelyFromLogWeights(weights, particles, 0.0);
+    return ParticlePopulation.buildDestructivelyFromLogWeights(weights, particles, logScaling);
   }
 
   public SMCAlgorithm(ProblemSpecification<P> proposal, SMCOptions options)

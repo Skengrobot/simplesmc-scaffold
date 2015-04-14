@@ -44,7 +44,7 @@ public class HMMProblemSpecification implements ProblemSpecification<Integer>
    */
   public Pair<Double, Integer>  proposeNext(int currentSmcIteration, Random random, Integer currentParticle) {
 	  int proposedParticle = this.parameters.sampleTransition(random, currentParticle);
-	  double weightUpdate = this.parameters.sampleEmission(random, proposedParticle);
+	  double weightUpdate = this.parameters.emissionLogPr(proposedParticle, observations.get(currentSmcIteration));
 	  Pair<Double, Integer> update= Pair.of(weightUpdate, proposedParticle);
 	  return update;
   }
@@ -55,8 +55,7 @@ public class HMMProblemSpecification implements ProblemSpecification<Integer>
    */
   public Pair<Double, Integer>  proposeInitial(Random random) {
 	  Integer particle = this.parameters.sampleInitial(random);
-	  int emission = this.parameters.sampleEmission(random, particle);
-	  Double weight = this.parameters.emissionLogPr(particle,emission);
+	  Double weight = this.parameters.emissionLogPr(particle,observations.get(0));
 	  Pair<Double, Integer> initialProposal = Pair.of(weight, particle); 
 	  return initialProposal;
   }
