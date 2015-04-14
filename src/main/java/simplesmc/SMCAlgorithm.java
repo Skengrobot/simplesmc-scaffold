@@ -47,9 +47,6 @@ public class SMCAlgorithm<P>
     
     for (int currentIteration = 0; currentIteration < nSMCIterations - 1; currentIteration++)
     {
-      /*
-       * Fill this with both the re-sampling and proposal
-       */
     	currentPopulation = propose(currentPopulation, currentIteration);
     	currentPopulation = currentPopulation.resample(randoms[0], ResamplingScheme.MULTINOMIAL);
     }
