@@ -2,6 +2,8 @@ package simplesmc.lingauss;
 
 import java.util.Random;
 
+import bayonet.distributions.Normal;
+import Jama.Matrix;
 /**
  *
  * Parameters for a simple linear Gaussian models
@@ -17,6 +19,33 @@ public class LinGaussParams {
 	
 	private int observationDim;
 	private int stateSpaceDim;
+	
+	private double[] initialProbs;
+	private Matrix transitionMatrix;
+	private double sigmaStateTransition;
+	private Matrix emissionMatrix;
+	private double sigmaEmission;
+	
+  /**
+  *	Make a vector of Gaussian randoms,
+  */
+  private Matrix makeStateNoiseVector(Random random){
+	  Matrix noise = new Matrix(1,this.stateSpaceDim);
+	  for(int i=0; i<this.stateSpaceDim; i++)
+		  noise.set(0,i,Normal.generate(random, 0.0, this.sigmaStateTransition));
+	  return noise;
+  }
+  
+  /**
+   * Ahem
+   */
+  private Double[] shamefulIerativeBox(double[][] shame){
+	  Double[] boxed = new Double[this.];
+	  for(int i=0; i<shame.length; i++)
+		  boxed[i] = shame[1][i];
+		  
+	  return boxed;
+  }
 	
   public double initialLogPr(int state) {
 	  // TODO
@@ -34,8 +63,13 @@ public class LinGaussParams {
   }
   
   public Double[] sampleTransition(Random random, Double[] currentState) {
-	  // TODO
-	  return null;
+	  Matrix stateVector = new Matrix(1,this.stateSpaceDim); 
+	  for (int i=0; i<currentState.length; i++)
+		  stateVector.set(0, i,currentState[i]);
+	  Matrix noise = makeStateNoiseVector(random);
+	  Matrix output = noise.plus(this.transitionMatrix.times(stateVector));
+	  
+	  return shamefulIerativeBox(output.getArray());
   }
   
   public double emissionLogPr(Double[] latentState, Double[] emission) {
