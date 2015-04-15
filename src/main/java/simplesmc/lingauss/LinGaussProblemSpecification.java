@@ -1,5 +1,6 @@
 package simplesmc.lingauss;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -15,30 +16,30 @@ import simplesmc.pmcmc.WithSignature;
  * @author Rudi Plesch (skengrobot@gmail.com)
 */
 
-public class LinGaussProblemSpecification implements ProblemSpecification<Double[]> {
+public class LinGaussProblemSpecification implements ProblemSpecification<ArrayList<Double>> {
 
 	private final LinGaussParams parameters;
-	private final List<Double[]> observations;
+	private final List<ArrayList<Double>> observations;
 	
-	public LinGaussProblemSpecification(LinGaussParams parameters, List<Double[]> observations) {
+	public LinGaussProblemSpecification(LinGaussParams parameters, List<ArrayList<Double>> observations) {
 		this.parameters = parameters;
 		this.observations = observations;
 	}
 	
 	@Override
-	public Pair<Double, Double[]> proposeNext(int currentSmcIteration,
-			Random random, Double[] currentParticle) {
-		Double[] proposedParticle = this.parameters.sampleTransition(random, currentParticle);
+	public Pair<Double, ArrayList<Double>> proposeNext(int currentSmcIteration,
+			Random random, ArrayList<Double> currentParticle) {
+		ArrayList<Double> proposedParticle = this.parameters.sampleTransition(random, currentParticle);
 		double weightUpdate = this.parameters.emissionLogPr(proposedParticle, observations.get(currentSmcIteration));
-		Pair<Double, Double[]>  update = Pair.of(weightUpdate, proposedParticle);
+		Pair<Double, ArrayList<Double>>  update = Pair.of(weightUpdate, proposedParticle);
 		return update;
 	}
 
 	@Override
-	public Pair<Double, Double[]> proposeInitial(Random random) {
-		Double[] proposedParticle = this.parameters.sampleInitial(random);
+	public Pair<Double, ArrayList<Double>> proposeInitial(Random random) {
+		ArrayList<Double> proposedParticle = this.parameters.sampleInitial(random);
 		Double weight = this.parameters.emissionLogPr(proposedParticle, observations.get(0));
-		Pair<Double, Double[]> update = Pair.of(weight, proposedParticle);
+		Pair<Double, ArrayList<Double>> update = Pair.of(weight, proposedParticle);
 		return update;
 	}
 

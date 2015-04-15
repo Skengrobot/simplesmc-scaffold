@@ -1,5 +1,6 @@
 package simplesmc.lingauss;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 import bayonet.distributions.Normal;
@@ -39,10 +40,10 @@ public class LinGaussParams {
   /**
    * Ahem
    */
-  private Double[] shamefulIerativeBox(double[][] shame){
-	  Double[] boxed = new Double[this.];
+  private ArrayList<Double> shamefulIerativeBox(double[][] shame){
+	  ArrayList<Double> boxed = new ArrayList<>();
 	  for(int i=0; i<shame.length; i++)
-		  boxed[i] = shame[1][i];
+		  boxed.add(i,shame[1][i]);
 		  
 	  return boxed;
   }
@@ -52,32 +53,31 @@ public class LinGaussParams {
 	  return 0.0;
   }
   
-  public Double[] sampleInitial(Random random) {
+  public ArrayList<Double> sampleInitial(Random random) {
 	  // TODO
 	  return null;
   }
   
-  public double transitionLogPr(Double[] currentState, int nextState) {
+  public double transitionLogPr(ArrayList<Double> currentState, int nextState) {
 	  // TODO
 	  return 0.0;
   }
   
-  public Double[] sampleTransition(Random random, Double[] currentState) {
+  public ArrayList<Double> sampleTransition(Random random, ArrayList<Double> currentState) {
 	  Matrix stateVector = new Matrix(1,this.stateSpaceDim); 
-	  for (int i=0; i<currentState.length; i++)
-		  stateVector.set(0, i,currentState[i]);
+	  for (int i=0; i<currentState.size(); i++)
+		  stateVector.set(0, i,currentState.get(i));
 	  Matrix noise = makeStateNoiseVector(random);
 	  Matrix output = noise.plus(this.transitionMatrix.times(stateVector));
 	  
 	  return shamefulIerativeBox(output.getArray());
   }
   
-  public double emissionLogPr(Double[] latentState, Double[] emission) {
-	  // TODO
+  public double emissionLogPr(ArrayList<Double> latentState, ArrayList<Double> emission) {
 	  return 0.0;
   }
 
-  public Double[] sampleEmission(Random random, Double[] currentState) {
+  public ArrayList<Double> sampleEmission(Random random, ArrayList<Double> currentState) {
 	  return null;
   }
   
