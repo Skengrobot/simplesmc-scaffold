@@ -24,7 +24,8 @@ public class LinGaussParams {
 	private double[] initialProbs;
 	private Matrix transitionMatrix;
 	private double sigmaStateTransition;
-	private Matrix emissionMatrix;
+	//Don't support this mixing matrix currently
+	//private Matrix emissionMatrix;
 	private double sigmaEmission;
 	
   /**
@@ -58,7 +59,7 @@ public class LinGaussParams {
 	  return null;
   }
   
-  public double transitionLogPr(ArrayList<Double> currentState, int nextState) {
+  public double transitionLogPr(ArrayList<Double> currentState, ArrayList<Double> nextState) {
 	  // TODO
 	  return 0.0;
   }
@@ -74,11 +75,15 @@ public class LinGaussParams {
   }
   
   public double emissionLogPr(ArrayList<Double> latentState, ArrayList<Double> emission) {
-	  return 0.0;
+	  double emissionProb = 0;
+	  for(int i=0; i<this.observationDim; i++)
+		  emissionProb += Normal.logDensity(emission.get(i), latentState.get(i), this.sigmaEmission);
+	  
+	  return emissionProb;
   }
 
   public ArrayList<Double> sampleEmission(Random random, ArrayList<Double> currentState) {
-	  return null;
+	  throw new RuntimeException();
   }
   
   public int stateSpaceDimesion() {
