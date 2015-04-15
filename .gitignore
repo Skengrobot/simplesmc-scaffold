@@ -8,3 +8,4 @@ bin/simplesmc/Main.class
 results
 build
 *.jar
+commons-math3-3.4.1/*
