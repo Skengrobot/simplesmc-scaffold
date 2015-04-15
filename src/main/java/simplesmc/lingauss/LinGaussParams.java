@@ -3,6 +3,7 @@ package simplesmc.lingauss;
 import java.util.ArrayList;
 import java.util.Random;
 
+import org.apache.commons.math3.distribution.MultivariateNormalDistribution;
 import bayonet.distributions.Normal;
 import Jama.Matrix;
 /**
@@ -23,18 +24,33 @@ public class LinGaussParams {
 	
 	private double[] initialProbs;
 	private Matrix transitionMatrix;
-	private double sigmaStateTransition;
-	//Don't support this mixing matrix currently
-	//private Matrix emissionMatrix;
-	private double sigmaEmission;
+	private Matrix emissionMatrix;
 	
+	private double sigmaTransitionProposal;
+	private double sigmaEmissionProposal;
+	
+  public LinGaussParams(int observationDim, int stateSpaceDim,
+		  double sigmaTransitionProposal, double sigmaEmissionProposal,
+		  double[][] transitionMatrix, double[][] emissionMatrix,
+		  double[] initialProbabilities)  {
+	  
+	  this.observationDim = observationDim;
+	  this.stateSpaceDim = stateSpaceDim;
+	  this.sigmaEmissionProposal = sigmaEmissionProposal;
+	  this.sigmaTransitionProposal = sigmaTransitionProposal;
+	  
+	  this.transitionMatrix = new Matrix(transitionMatrix);
+	  this. emissionMatrix = new Matrix(emissionMatrix);
+	  
+  }
+
   /**
   *	Make a vector of Gaussian randoms,
   */
   private Matrix makeStateNoiseVector(Random random){
 	  Matrix noise = new Matrix(1,this.stateSpaceDim);
 	  for(int i=0; i<this.stateSpaceDim; i++)
-		  noise.set(0,i,Normal.generate(random, 0.0, this.sigmaStateTransition));
+		  noise.set(0,i,Normal.generate(random, 0.0, this.sigmaTransitionProposal));
 	  return noise;
   }
   
@@ -75,9 +91,21 @@ public class LinGaussParams {
   }
   
   public double emissionLogPr(ArrayList<Double> latentState, ArrayList<Double> emission) {
-	  double emissionProb = 0;
-	  for(int i=0; i<this.observationDim; i++)
-		  emissionProb += Normal.logDensity(emission.get(i), latentState.get(i), this.sigmaEmission);
+	  // Have to use the multivariate Gaussian from org.apachecommons.math3 
+	  // This doesn't cause a random seeding problem because I'm only using it for likelihoods.
+	  double[][] covariances = this.emissionMatrix.times(this.emissionMatrix.transpose()).getArray();
+	  
+	  // Put everything into primitive arrays
+	  double[] emissionArray = new double[emission.size()];
+	  for(int i=0; i<emission.size(); i++)
+		  emissionArray[i] = emission.get(i);
+	  double[] state = new double[latentState.size()];
+	  for(int i=0; i<latentState.size(); i++)
+		  emissionArray[i] = latentState.get(i);
+	  
+	  // Get to work
+	  MultivariateNormalDistribution dist = new MultivariateNormalDistribution(state, covariances);
+	  double emissionProb = Math.log(dist.density(emissionArray));
 	  
 	  return emissionProb;
   }
