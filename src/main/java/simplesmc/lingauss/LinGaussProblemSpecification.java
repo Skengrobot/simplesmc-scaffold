@@ -17,23 +17,34 @@ import simplesmc.pmcmc.WithSignature;
 
 public class LinGaussProblemSpecification implements ProblemSpecification<Double[]> {
 
+	private final LinGaussParams parameters;
+	private final List<Double[]> observations;
+	
+	public LinGaussProblemSpecification(LinGaussParams parameters, List<Double[]> observations) {
+		this.parameters = parameters;
+		this.observations = observations;
+	}
+	
 	@Override
 	public Pair<Double, Double[]> proposeNext(int currentSmcIteration,
 			Random random, Double[] currentParticle) {
-		// TODO Auto-generated method stub
-		return null;
+		Double[] proposedParticle = this.parameters.sampleTransition(random, currentParticle);
+		double weightUpdate = this.parameters.emissionLogPr(proposedParticle, observations.get(currentSmcIteration));
+		Pair<Double, Double[]>  update = Pair.of(weightUpdate, proposedParticle);
+		return update;
 	}
 
 	@Override
 	public Pair<Double, Double[]> proposeInitial(Random random) {
-		// TODO Auto-generated method stub
-		return null;
+		Double[] proposedParticle = this.parameters.sampleInitial(random);
+		Double weight = this.parameters.emissionLogPr(proposedParticle, observations.get(0));
+		Pair<Double, Double[]> update = Pair.of(weight, proposedParticle);
+		return update;
 	}
 
 	@Override
 	public int nIterations() {
-		// TODO Auto-generated method stub
-		return 0;
+		return this.observations.size();
 	}
 	
 }

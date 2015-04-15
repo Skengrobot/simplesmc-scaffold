@@ -23,27 +23,27 @@ public class LinGaussParams {
 	  return 0.0;
   }
   
-  public double[] sampleInitial(Random random) {
+  public Double[] sampleInitial(Random random) {
 	  // TODO
 	  return null;
   }
   
-  public double transitionLogPr(int currentState, int nextState) {
+  public double transitionLogPr(Double[] currentState, int nextState) {
 	  // TODO
 	  return 0.0;
   }
   
-  public double[] sampleTransition(Random random, int currentState) {
+  public Double[] sampleTransition(Random random, Double[] currentState) {
 	  // TODO
 	  return null;
   }
   
-  public double emissionLogPr(int latentState, int emission) {
+  public double emissionLogPr(Double[] latentState, Double[] emission) {
 	  // TODO
 	  return 0.0;
   }
 
-  public double[] sampleEmission(Random random, int currentState) {
+  public Double[] sampleEmission(Random random, Double[] currentState) {
 	  return null;
   }
   
