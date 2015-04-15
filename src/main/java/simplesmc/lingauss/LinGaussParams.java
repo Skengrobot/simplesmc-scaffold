@@ -76,8 +76,23 @@ public class LinGaussParams {
   }
   
   public double transitionLogPr(ArrayList<Double> currentState, ArrayList<Double> nextState) {
-	  // TODO
-	  return 0.0;
+	  // Have to use the multivariate Gaussian from org.apachecommons.math3 
+	  // This doesn't cause a random seeding problem because I'm only using it for likelihoods.
+	  double[][] covariances = this.transitionMatrix.times(this.transitionMatrix.transpose()).getArray();
+	  
+	  // Put everything into primitive arrays
+	  double[] current = new double[currentState.size()];
+	  for(int i=0; i<currentState.size(); i++)
+		  current[i] = currentState.get(i);
+	  double[] next = new double[nextState.size()];
+	  for(int i=0; i<nextState.size(); i++)
+		  next[i] = nextState.get(i);
+	  
+	  // Get to work
+	  MultivariateNormalDistribution dist = new MultivariateNormalDistribution(current, covariances);
+	  double emissionProb = Math.log(dist.density(next));
+	  
+	  return emissionProb;
   }
   
   public ArrayList<Double> sampleTransition(Random random, ArrayList<Double> currentState) {
@@ -111,6 +126,7 @@ public class LinGaussParams {
   }
 
   public ArrayList<Double> sampleEmission(Random random, ArrayList<Double> currentState) {
+	  // Don't think I need to use this
 	  throw new RuntimeException();
   }
   
