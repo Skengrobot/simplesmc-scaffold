@@ -24,19 +24,11 @@ class LinearGaussianSystem:
         return numpy.ones((self.transition.shape[0],1))
 
     def generate_next(self, current_state):
-        print 'currenst state'
-        print current_state
         noise = self.sigma_emission * numpy.random.randn(self.transition.shape[0],1)
-        print 'noise'
-        print noise
-        print 'transition'
-        print self.transition * current_state + noise
         return self.transition * current_state + noise
 
     def generate_emission(self, current_state):
         noise = self.sigma_emission * numpy.random.randn(self.emission.shape[0],1)
-        print 'emission'
-        print self.emission * current_state + noise
         return self.emission * current_state + noise
 
     def observe(self, num_iterations):
@@ -50,8 +42,7 @@ if __name__ == '__main__':
     if len(sys.argv) < 2:
         print 'Enter an iteration count (length of process)'
     
-    system = LinearGaussianSystem('1 2; 1 4', '3 1; 1 5', 0.01, 0.01)
+    system = LinearGaussianSystem('0.965925826289068 -0.258819045102521; 0.258819045102521 0.965925826289068', '3 1; 4 2', 0.01, 0.01)
 
-    for i in range(int(sys.argv[1])):
-        for observation in system.observe(int(sys.argv[1])):
-            print observation
+    for observation in system.observe(int(sys.argv[1])):
+        print observation
