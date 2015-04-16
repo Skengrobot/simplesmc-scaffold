@@ -66,12 +66,14 @@ public class LinGaussParams {
   }
 	
   public double initialLogPr(int state) {
-	  // TODO
+	  // This is 0, since we assume we know the starting state
 	  return 0.0;
   }
   
   public ArrayList<Double> sampleInitial(Random random) {
-	  // TODO
+	  ArrayList<Double> state = new ArrayList<>();
+	  for (int i=0; i<this.stateSpaceDim; i++)
+		  state.add(this.initialProbs[i]);
 	  return null;
   }
   
