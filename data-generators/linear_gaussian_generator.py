@@ -40,9 +40,23 @@ class LinearGaussianSystem:
 
 if __name__ == '__main__':
     if len(sys.argv) < 2:
-        print 'Enter an iteration count (length of process)'
+        print 'Enter an iteration count (length of process) and file name to output to'
     
+    # 2-d rotation
     system = LinearGaussianSystem('0.965925826289068 -0.258819045102521; 0.258819045102521 0.965925826289068', '3 1; 4 2', 0.01, 0.01)
 
+    outfile = open(sys.argv[2],'w')
+
     for observation in system.observe(int(sys.argv[1])):
-        print observation
+        obs_list = [i[0] for i in observation.tolist()] 
+
+        # Put everything in csv string
+        out_string = str(obs_list[0])
+        for num in obs_list[1:-1]:
+            out_string = out_string + ',' + str(num)
+        out_string = out_string + ',' + str(obs_list[-1]) + '\n'
+
+        # Print to file
+        outfile.write(out_string)
+
+    outfile.close()
