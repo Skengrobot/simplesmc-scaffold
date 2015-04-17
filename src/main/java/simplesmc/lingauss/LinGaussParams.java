@@ -40,7 +40,8 @@ public class LinGaussParams {
 	  this.sigmaTransitionProposal = sigmaTransitionProposal;
 	  
 	  this.transitionMatrix = new Matrix(transitionMatrix);
-	  this. emissionMatrix = new Matrix(emissionMatrix);
+	  this.emissionMatrix = new Matrix(emissionMatrix);
+	  this.initialProbs = initialProbabilities;
 	  
   }
 
@@ -51,7 +52,7 @@ public class LinGaussParams {
 	  Matrix noise = new Matrix(1,this.stateSpaceDim);
 	  for(int i=0; i<this.stateSpaceDim; i++)
 		  noise.set(0,i,Normal.generate(random, 0.0, this.sigmaTransitionProposal));
-	  return noise;
+	  return noise.transpose();
   }
   
   /**
@@ -60,7 +61,7 @@ public class LinGaussParams {
   private ArrayList<Double> shamefulIerativeBox(double[][] shame){
 	  ArrayList<Double> boxed = new ArrayList<>();
 	  for(int i=0; i<shame.length; i++)
-		  boxed.add(i,shame[1][i]);
+		  boxed.add(shame[i][0]);
 		  
 	  return boxed;
   }
@@ -71,10 +72,10 @@ public class LinGaussParams {
   }
   
   public ArrayList<Double> sampleInitial(Random random) {
-	  ArrayList<Double> state = new ArrayList<>();
+	  ArrayList<Double> state = new ArrayList<>(this.stateSpaceDim);
 	  for (int i=0; i<this.stateSpaceDim; i++)
 		  state.add(this.initialProbs[i]);
-	  return null;
+	  return state;
   }
   
   public double transitionLogPr(ArrayList<Double> currentState, ArrayList<Double> nextState) {
@@ -102,7 +103,7 @@ public class LinGaussParams {
 	  for (int i=0; i<currentState.size(); i++)
 		  stateVector.set(0, i,currentState.get(i));
 	  Matrix noise = makeStateNoiseVector(random);
-	  Matrix output = noise.plus(this.transitionMatrix.times(stateVector));
+	  Matrix output = noise.plus(this.transitionMatrix.times(stateVector.transpose()));
 	  
 	  return shamefulIerativeBox(output.getArray());
   }
