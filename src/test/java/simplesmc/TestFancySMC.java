@@ -12,6 +12,9 @@ import simplesmc.fancysmc.fancySMCalgorithm;
 import simplesmc.hmm.HMMProblemSpecification;
 import simplesmc.hmm.HMMUtils;
 import simplesmc.hmm.ToyHMMParams;
+import simplesmc.lingauss.LinGaussParams;
+import simplesmc.lingauss.LinGaussProblemSpecification;
+import simplesmc.lingauss.LinGaussUtils;
 
 
 public class TestFancySMC {
@@ -21,7 +24,7 @@ public class TestFancySMC {
 		Random random = new Random(1);
 		ToyHMMParams hmmParams = new ToyHMMParams(5);
     
-		Pair<List<Integer>, List<Integer>> generated = HMMUtils.generate(random, hmmParams, 200);
+		Pair<List<Integer>, List<Integer>> generated = HMMUtils.generate(random, hmmParams, 400);
 		List<Integer> observations = generated.getRight();
     
 		System.out.println("exact = " + HMMUtils.exactDataLogProbability(hmmParams, observations));
@@ -33,4 +36,28 @@ public class TestFancySMC {
 		Pair<ParticlePopulation<Integer>, ArrayList<Double>> output = smc.fancySample();
 		System.out.println("Final log likelihood = " + output.getLeft().logNormEstimate());
 	}
+	
+	/**
+	 * See  TestLinGauss if you want to know more about usage
+	 * 
+	 * This CSV file contains a change in noise parameter at 200
+	 */
+	@Test
+	public void testFancyWithGaussian() {
+		ArrayList<ArrayList<Double>> observations = LinGaussUtils.parseFile("/home/rudi/src/simplesmc-scaffold/data-generators/small-big.csv");
+
+		// These parameters match the ones used to create the 
+		double[][] transitionMatrix = {{0.965925826289068, -0.258819045102521},{0.258819045102521, 0.965925826289068}};
+		double[][] emissionMatrix = {{3,1},{4,2}};
+		double[] intialProbabilities = {1,1};
+		LinGaussParams system = new LinGaussParams(2, 2, 0.01, 0.01, transitionMatrix, emissionMatrix, intialProbabilities);
+		
+		LinGaussProblemSpecification proposal = new LinGaussProblemSpecification(system, observations);
+		
+		SMCOptions options = new SMCOptions();
+		SMCAlgorithm<ArrayList<Double>> smc = new SMCAlgorithm<>(proposal, options);
+		System.out.println("estimate = " + smc.sample().logNormEstimate());
+		
+	}
+	
 }
