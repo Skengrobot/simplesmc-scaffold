@@ -32,7 +32,7 @@ public class SMCAlgorithm<P>
    * multi-threading context: each particle index has its own unique random 
    * stream
    */
-  private final Random[] randoms;
+  protected final Random[] randoms;
   
   /**
    * Compute the SMC algorithm
@@ -64,7 +64,7 @@ public class SMCAlgorithm<P>
    * @param currentIteration The iteration of the particles used as starting points for the proposal step
    * @return
    */
-  private ParticlePopulation<P> propose(final ParticlePopulation<P> currentPopulation, final int currentIteration)
+  protected ParticlePopulation<P> propose(final ParticlePopulation<P> currentPopulation, final int currentIteration)
   {
     final boolean isInitial = currentPopulation == null;
     ArrayList<P> particles = new ArrayList<>();
