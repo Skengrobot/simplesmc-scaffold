@@ -19,6 +19,6 @@ public class SMCOptions
   public Random random = new Random(1);
   
   @Option(gloss = "Number of particles")
-  public int nParticles = 10000;
+  public int nParticles = 100000;
 
 }

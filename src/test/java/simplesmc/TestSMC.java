@@ -20,7 +20,7 @@ public class TestSMC
     Random random = new Random(1);
     ToyHMMParams hmmParams = new ToyHMMParams(5);
     
-    Pair<List<Integer>, List<Integer>> generated = HMMUtils.generate(random, hmmParams, 10);
+    Pair<List<Integer>, List<Integer>> generated = HMMUtils.generate(random, hmmParams, 200);
     List<Integer> observations = generated.getRight();
     
     System.out.println("exact = " + HMMUtils.exactDataLogProbability(hmmParams, observations));
