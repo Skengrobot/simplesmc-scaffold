@@ -50,31 +50,28 @@ public class fancySMCalgorithm<P> extends SMCAlgorithm<P>{
 		ParticlePopulation<P> currentPopulation = propose(null, 0);
     
 		int nSMCIterations = proposal.nIterations();
-    
-		// Here the intermediate likelihood queue it not full yet, so we just insert
-		// At each sampling interval, the intermediate data likelihood is added to the running sum and 
-		// appended to the linked list so we can keep track of them
-		for (int currentIteration = 0; currentIteration <= this.refreshInterval; currentIteration++) {
-			currentPopulation = propose(currentPopulation, currentIteration);
-			currentPopulation = currentPopulation.resample(randoms[0], ResamplingScheme.MULTINOMIAL);
-			if (currentIteration!=0 && currentIteration % this.samplingInterval == 0){
-				double intermediateLikelihood = currentPopulation.logNormEstimate();
-				intervalLikelihood += intermediateLikelihood;
-				likelihoodQueue.addFirst(intermediateLikelihood);
-			}
-		}
 		
-		// Here the intermediate likelihood is full so we push on likelihood and pop another, also add and subtract from the
-		// running sum
-		for (int currentIteration = this.refreshInterval + 1; currentIteration < nSMCIterations - 1; currentIteration++) {
+		//Fill queue with 0s to start
+		for (int i=0; i<this.refreshInterval/this.samplingInterval; i++)
+			likelihoodQueue.addFirst(0.0);
+    
+		// At each sampling interval, the intermediate data likelihood is computed
+		// appended to the linked list so we can keep track of them
+		// Push one likelihood and pop another, also add and subtract from the running sum
+		currentPopulation = propose(currentPopulation, 0);
+		currentPopulation = currentPopulation.resample(randoms[0], ResamplingScheme.MULTINOMIAL);
+		for (int currentIteration = 1; currentIteration < nSMCIterations - 1; currentIteration++) {
 			currentPopulation = propose(currentPopulation, currentIteration);
 			currentPopulation = currentPopulation.resample(randoms[0], ResamplingScheme.MULTINOMIAL);
+
+			// At the end of each sampling interval, compute intermediate likelihoods
 			if (currentIteration % this.samplingInterval == 0){
 				intervalLikelihood -= likelihoodQueue.removeLast();
-				double intermediateLikelihood = currentPopulation.logNormEstimate();
+				double intermediateLikelihood = currentPopulation.logNormEstimate() - likelihoodQueue.getFirst();
 				intervalLikelihood += intermediateLikelihood;
 				likelihoodQueue.addFirst(intermediateLikelihood);
-				
+				intervalLikelihoods.add(intervalLikelihood);
+				fancySMCutils.printQueue(likelihoodQueue);
 			}
 		}
     
