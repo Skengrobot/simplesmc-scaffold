@@ -6,6 +6,11 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 
+/**
+ * 	Some helper functions for the linear Gaussian model
+ * 
+ * @author Rudi Plesch
+ */
 
 public class LinGaussUtils {
 	
