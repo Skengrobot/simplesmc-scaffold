@@ -47,6 +47,9 @@ public class fancySMCalgorithm<P> extends SMCAlgorithm<P>{
 		ArrayList<Double> intervalLikelihoods = new ArrayList<Double>();
 		double intervalLikelihood = 0;
 		double lastLikelihood = 0;
+		double totalLikelihood = 0;
+		double currentLikelihood = 0; 
+		double intermediateLikelihood = 0;
 		
 		ParticlePopulation<P> currentPopulation = propose(null, 0);
     
@@ -68,9 +71,10 @@ public class fancySMCalgorithm<P> extends SMCAlgorithm<P>{
 			// At the end of each sampling interval, compute intermediate likelihoods
 			if (currentIteration % this.samplingInterval == 0){
 				// Calculate sampling interval likelihood
-				double currentLikelihood = currentPopulation.logNormEstimate();
-				double intermediateLikelihood = currentLikelihood - lastLikelihood;
+				currentLikelihood = currentPopulation.logNormEstimate();
+				intermediateLikelihood = currentLikelihood - lastLikelihood;
 				lastLikelihood = currentLikelihood;
+				totalLikelihood += intermediateLikelihood;
 				// Pop and push from queue to update 
 				intervalLikelihood -= likelihoodQueue.removeLast();
 				intervalLikelihood += intermediateLikelihood;
@@ -80,6 +84,7 @@ public class fancySMCalgorithm<P> extends SMCAlgorithm<P>{
 			}
 		}
     
+		System.out.println(totalLikelihood);
 		return Pair.of(currentPopulation, intervalLikelihoods);
 	}
 	

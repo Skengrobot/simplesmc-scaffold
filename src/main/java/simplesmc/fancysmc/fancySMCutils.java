@@ -11,10 +11,12 @@ import java.util.LinkedList;
 public class fancySMCutils {
 	
 	public static void printQueue(LinkedList<Double> q){
+		double total = 0;
 		for (Double item : q) {
 			System.out.print(item);
 			System.out.print(',');
+			total += item;
 		}
-		System.out.println();
+		System.out.println(" Total: " + total);
 	}
 }
