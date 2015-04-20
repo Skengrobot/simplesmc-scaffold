@@ -67,10 +67,12 @@ public class fancySMCalgorithm<P> extends SMCAlgorithm<P>{
 
 			// At the end of each sampling interval, compute intermediate likelihoods
 			if (currentIteration % this.samplingInterval == 0){
-				intervalLikelihood -= likelihoodQueue.removeLast();
+				// Calculate sampling interval likelihood
 				double currentLikelihood = currentPopulation.logNormEstimate();
 				double intermediateLikelihood = currentLikelihood - lastLikelihood;
 				lastLikelihood = currentLikelihood;
+				// Pop and push from queue to update 
+				intervalLikelihood -= likelihoodQueue.removeLast();
 				intervalLikelihood += intermediateLikelihood;
 				likelihoodQueue.addFirst(intermediateLikelihood);
 				intervalLikelihoods.add(intervalLikelihood);
