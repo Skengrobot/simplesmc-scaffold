@@ -14,7 +14,7 @@ import bayonet.smc.ParticlePopulation;
 import bayonet.smc.ResamplingScheme;
 
 /**
- * Modified SMC sampling scheme for a paper that I'll write, host somewhere and link.
+ * Modified SMC sampling scheme for a paper that I'll write, host somewhere, and link.
  * 
  * @author Rudi Plesch
  */
@@ -46,6 +46,7 @@ public class fancySMCalgorithm<P> extends SMCAlgorithm<P>{
 		LinkedList<Double> likelihoodQueue= new LinkedList<>();
 		ArrayList<Double> intervalLikelihoods = new ArrayList<Double>();
 		double intervalLikelihood = 0;
+		double lastLikelihood = 0;
 		
 		ParticlePopulation<P> currentPopulation = propose(null, 0);
     
@@ -67,7 +68,9 @@ public class fancySMCalgorithm<P> extends SMCAlgorithm<P>{
 			// At the end of each sampling interval, compute intermediate likelihoods
 			if (currentIteration % this.samplingInterval == 0){
 				intervalLikelihood -= likelihoodQueue.removeLast();
-				double intermediateLikelihood = currentPopulation.logNormEstimate() - likelihoodQueue.getFirst();
+				double currentLikelihood = currentPopulation.logNormEstimate();
+				double intermediateLikelihood = currentLikelihood - lastLikelihood;
+				lastLikelihood = currentLikelihood;
 				intervalLikelihood += intermediateLikelihood;
 				likelihoodQueue.addFirst(intermediateLikelihood);
 				intervalLikelihoods.add(intervalLikelihood);

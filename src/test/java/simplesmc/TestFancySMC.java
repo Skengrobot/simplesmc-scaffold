@@ -42,7 +42,7 @@ public class TestFancySMC {
 	 * 
 	 * This CSV file contains a change in noise parameter at 200
 	 */
-	@Test
+	//@Test
 	public void testFancyWithGaussian() {
 		ArrayList<ArrayList<Double>> observations = LinGaussUtils.parseFile("/home/rudi/src/simplesmc-scaffold/data-generators/small-big.csv");
 
