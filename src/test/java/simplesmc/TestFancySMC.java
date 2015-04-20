@@ -57,7 +57,7 @@ public class TestFancySMC {
 		LinGaussProblemSpecification proposal = new LinGaussProblemSpecification(system, observations);
 		
 		SMCOptions options = new SMCOptions();
-		fancySMCalgorithm<ArrayList<Double>> smc = new fancySMCalgorithm<>(proposal, options, 10, 4);
+		fancySMCalgorithm<ArrayList<Double>> smc = new fancySMCalgorithm<>(proposal, options, 10, 2);
 		Pair<ParticlePopulation<ArrayList<Double>>, ArrayList<Double>> output = smc.fancySample();
 		System.out.println("Final log likelihood = " + output.getLeft().logNormEstimate());
 	}
