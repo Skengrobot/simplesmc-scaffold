@@ -10,6 +10,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import bayonet.smc.ParticlePopulation;
 import bayonet.smc.ResamplingScheme;
+import briefj.BriefParallel;
 
 
 /**
@@ -47,7 +48,7 @@ public class SMCAlgorithm<P>
     
     for (int currentIteration = 0; currentIteration < nSMCIterations - 1; currentIteration++)
     {
-    	currentPopulation = propose(currentPopulation, currentIteration);
+    	currentPopulation = ParallelPropose(currentPopulation, currentIteration);
     	currentPopulation = currentPopulation.resample(randoms[0], ResamplingScheme.MULTINOMIAL);
     }
     
@@ -90,6 +91,42 @@ public class SMCAlgorithm<P>
     	logScaling = currentPopulation.logScaling;
     }
     return ParticlePopulation.buildDestructivelyFromLogWeights(weights, particles, logScaling);
+  }
+  
+  
+  /**
+   * Calls the proposal options.nParticles times, form the new weights, and return the new population.
+   * 
+   * If the provided currentPopulation is null, use the initial distribution, otherwise, use the 
+   * transition. Both are specified by the proposal object.
+   * 
+   * @param currentPopulation The population of particles before the proposal
+   * @param currentIteration The iteration of the particles used as starting points for the proposal step
+   * @return
+   */
+  protected ParticlePopulation<P> ParallelPropose(final ParticlePopulation<P> currentPopulation, final int currentIteration)
+  {
+    final boolean isInitial = currentPopulation == null;
+    
+    final double [] logWeights = new double[options.nParticles];
+    @SuppressWarnings("unchecked")
+    final P [] particles = (P[]) new Object[options.nParticles];
+    
+    BriefParallel.process(options.nParticles, options.nThreads, particleIndex ->
+    {
+      Pair<Double, P> proposed = isInitial ?
+        proposal.proposeInitial(randoms[particleIndex]) :
+        proposal.proposeNext(currentIteration, randoms[particleIndex], currentPopulation.particles.get(particleIndex));
+      logWeights[particleIndex] = 
+        proposed.getLeft().doubleValue() + 
+        (isInitial ? 0.0 : Math.log(currentPopulation.getNormalizedWeight(particleIndex)));
+        particles[particleIndex] = (proposed.getRight());
+    });
+    
+    return ParticlePopulation.buildDestructivelyFromLogWeights(
+        logWeights, 
+        Arrays.asList(particles),
+        isInitial ? 0.0 : currentPopulation.logScaling);
   }
 
   public SMCAlgorithm(ProblemSpecification<P> proposal, SMCOptions options)
