@@ -43,7 +43,7 @@ if __name__ == '__main__':
         print 'Enter an iteration count (length of process) and file name to output to'
     
     # 2-d rotation
-    system = LinearGaussianSystem('0.965925826289068 -0.258819045102521; 0.258819045102521 0.965925826289068', '3 1; 4 2', 0.001, 0.01)
+    system = LinearGaussianSystem('0.965925826289068 -0.258819045102521; 0.258819045102521 0.965925826289068', '0 0; 4 2', 0.001, 0.1)
 
     outfile = open(sys.argv[2],'w')
 
