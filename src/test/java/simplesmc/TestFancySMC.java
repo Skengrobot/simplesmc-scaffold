@@ -24,6 +24,25 @@ public class TestFancySMC {
 		Random random = new Random(1);
 		ToyHMMParams hmmParams = new ToyHMMParams(5);
     
+		Pair<List<Integer>, List<Integer>> generated = HMMUtils.generate(random, hmmParams, 600);
+		List<Integer> observations = generated.getRight();
+    
+		System.out.println("exact = " + HMMUtils.exactDataLogProbability(hmmParams, observations));
+    
+		HMMProblemSpecification proposal = new HMMProblemSpecification(hmmParams, observations);
+    
+		SMCOptions options = new SMCOptions();
+		fancySMCalgorithm<Integer> smc = new fancySMCalgorithm<>(proposal, options, 10, 1);
+		Pair<ParticlePopulation<Integer>, ArrayList<Double>> output = smc.fancySample();
+		System.out.println("Final log likelihood = " + output.getLeft().logNormEstimate());
+	
+	}
+	
+	@Test
+	public void testChangepoint() {
+		Random random = new Random(1);
+		ToyHMMParams hmmParams = new ToyHMMParams(5);
+    
 		Pair<List<Integer>, List<Integer>> generated = HMMUtils.generateWithChangepoint(random, hmmParams, 600);
 		List<Integer> observations = generated.getRight();
     
