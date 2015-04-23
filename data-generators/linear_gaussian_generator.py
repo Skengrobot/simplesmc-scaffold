@@ -35,7 +35,9 @@ class LinearGaussianSystem:
         state = self.generate_initial()
         for i in range(num_iterations):
             observation = self.generate_emission(state)
+            print observation
             state = self.generate_next(state)
+            print state
             yield observation
 
 if __name__ == '__main__':
@@ -43,7 +45,7 @@ if __name__ == '__main__':
         print 'Enter an iteration count (length of process) and file name to output to'
     
     # 2-d rotation
-    system = LinearGaussianSystem('0.965925826289068 -0.258819045102521; 0.258819045102521 0.965925826289068', '0 0; 4 2', 0.001, 0.1)
+    system = LinearGaussianSystem('0.965925826289068 -0.258819045102521; 0.258819045102521 0.965925826289068', '3 1; 4 2', 0.001, 0.001)
 
     outfile = open(sys.argv[2],'w')
 

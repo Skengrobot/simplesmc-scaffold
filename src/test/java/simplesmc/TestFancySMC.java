@@ -19,7 +19,7 @@ import simplesmc.lingauss.LinGaussUtils;
 
 public class TestFancySMC {
 	
-	@Test
+	//@Test
 	public void testFancySMC() {
 		Random random = new Random(1);
 		ToyHMMParams hmmParams = new ToyHMMParams(5);
@@ -42,11 +42,11 @@ public class TestFancySMC {
 	 * 
 	 * This CSV file contains a change in noise parameter at 200
 	 */
-	//@Test
+	@Test
 	public void testFancyWithGaussian() {
 		System.out.println("GO!");
 		Random random = new Random(1);
-		ArrayList<ArrayList<Double>> observations = LinGaussUtils.parseFile("/home/rudi/src/simplesmc-scaffold/data-generators/datasets/small-broken.csv");
+		ArrayList<ArrayList<Double>> observations = LinGaussUtils.parseFile("/home/rudi/src/simplesmc-scaffold/data-generators/datasets/lingauss-transition.csv");
 
 		// These parameters match the ones used to create the 
 		double[][] transitionMatrix = {{0.965925826289068, -0.258819045102521},{0.258819045102521, 0.965925826289068}};

@@ -78,6 +78,7 @@ public class fancySMCalgorithm<P> extends SMCAlgorithm<P>{
 				intervalLikelihood += intermediateLikelihood;
 				likelihoodQueue.addFirst(intermediateLikelihood);
 				intervalLikelihoods.add(intervalLikelihood);
+				fancySMCutils.printQueue(likelihoodQueue);
 			}
 		}
     
