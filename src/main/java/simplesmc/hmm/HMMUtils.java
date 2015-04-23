@@ -46,6 +46,31 @@ public class HMMUtils
     
     return Pair.of(latents, observations);
   }
+
+  public static Pair<List<Integer>,List<Integer>> generateWithChangepoint(Random random, HMMParams params, int length)
+  {
+    List<Integer> 
+      latents = new ArrayList<Integer>(),
+      observations = new ArrayList<>();
+    
+    for (int iteration = 0; iteration < Math.floor(length/2); iteration++)
+    {
+      int currentLatent = iteration == 0 ? 
+        params.sampleInitial(random) : 
+        params.sampleTransition(random, Iterables.getLast(latents));
+      int currentObs = params.sampleEmission(random, currentLatent);
+      latents.add(currentLatent);
+      observations.add(currentObs);
+    }
+    for (int iteration = (int) Math.floor(length/2); iteration < length; iteration++) {
+      int currentLatent = params.sampleChangedTransition(random, Iterables.getLast(latents));
+      int currentObs = params.sampleEmission(random, currentLatent);
+      latents.add(currentLatent);
+      observations.add(currentObs);
+    }
+    
+    return Pair.of(latents, observations);
+  }
   
   /**
    * Construct a factor graph, and use the sum product algorithm to 

@@ -60,6 +60,12 @@ public class ToyHMMParams implements HMMParams
     return sample(random, currentState, selfTransitionProbability.getValue());
   }
   
+  @Override
+  public int sampleChangedTransition(Random random, int currentState)
+  {
+    return sample(random, currentState, 1-selfTransitionProbability.getValue());
+  }
+  
   private int sample(Random random, int currentState, double selfTransitionProbability)
   {
     if (Bernoulli.generate(random, selfTransitionProbability))
