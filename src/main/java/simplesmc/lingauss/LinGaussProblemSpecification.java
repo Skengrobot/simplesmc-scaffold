@@ -31,6 +31,7 @@ public class LinGaussProblemSpecification implements ProblemSpecification<ArrayL
 			Random random, ArrayList<Double> currentParticle) {
 		ArrayList<Double> proposedParticle = this.parameters.sampleTransition(random, currentParticle);
 		double weightUpdate = this.parameters.emissionLogPr(proposedParticle, observations.get(currentSmcIteration));
+		System.out.println(weightUpdate);
 		Pair<Double, ArrayList<Double>>  update = Pair.of(weightUpdate, proposedParticle);
 		return update;
 	}
