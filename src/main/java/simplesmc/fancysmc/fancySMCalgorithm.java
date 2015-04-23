@@ -47,7 +47,6 @@ public class fancySMCalgorithm<P> extends SMCAlgorithm<P>{
 		ArrayList<Double> intervalLikelihoods = new ArrayList<Double>();
 		double intervalLikelihood = 0;
 		double lastLikelihood = 0;
-		double totalLikelihood = 0;
 		double currentLikelihood = 0; 
 		double intermediateLikelihood = 0;
 		
@@ -74,17 +73,14 @@ public class fancySMCalgorithm<P> extends SMCAlgorithm<P>{
 				currentLikelihood = currentPopulation.logNormEstimate();
 				intermediateLikelihood = currentLikelihood - lastLikelihood;
 				lastLikelihood = currentLikelihood;
-				totalLikelihood += intermediateLikelihood;
 				// Pop and push from queue to update 
 				intervalLikelihood -= likelihoodQueue.removeLast();
 				intervalLikelihood += intermediateLikelihood;
 				likelihoodQueue.addFirst(intermediateLikelihood);
 				intervalLikelihoods.add(intervalLikelihood);
-				fancySMCutils.printQueue(likelihoodQueue);
 			}
 		}
     
-		System.out.println(totalLikelihood);
 		return Pair.of(currentPopulation, intervalLikelihoods);
 	}
 	
