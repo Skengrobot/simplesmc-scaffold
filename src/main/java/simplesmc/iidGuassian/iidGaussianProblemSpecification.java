@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.math3.distribution.NormalDistribution;
 
 import simplesmc.ProblemSpecification;
 import simplesmc.lingauss.LinGaussUtils;
@@ -14,12 +15,16 @@ public class iidGaussianProblemSpecification implements ProblemSpecification<Dou
 	private final ArrayList<Double> observations;
 	private final double mean;
 	private final double variance;
+	private final NormalDistribution normDist;
 	
 	public iidGaussianProblemSpecification(ArrayList<Double> observations,
 			double mean, double variance) {
 		this.observations = observations;
 		this.mean = mean;
 		this.variance = variance;
+		
+		normDist = new NormalDistribution(mean, Math.sqrt(variance));
+		
 	}
 
 	public iidGaussianProblemSpecification(String filename,
@@ -27,6 +32,8 @@ public class iidGaussianProblemSpecification implements ProblemSpecification<Dou
 		this.mean = mean;
 		this.variance = variance;
 		this.observations = new ArrayList<Double>();
+
+		normDist = new NormalDistribution(mean, Math.sqrt(variance));
 		
 		// Lazy, hacky reuse of file parser
 		ArrayList<ArrayList<Double>> parsed = LinGaussUtils.parseFile(filename);
@@ -45,7 +52,14 @@ public class iidGaussianProblemSpecification implements ProblemSpecification<Dou
 	@Override
 	public Pair<Double, Double> proposeInitial(Random random) {
 		double proposedParticle = Normal.generate(random, mean, variance);
-		double weightUpdate = Normal.logDensity(observations.get(0), mean, variance);
+		double weightUpdate = this.normDist.logDensity(observations.get(0));
+		System.out.println(observations.get(0));
+		System.out.println();
+		System.out.println(this.normDist.density(observations.get(0)));
+		System.out.println(weightUpdate);
+		System.out.println();
+		System.out.println(Normal.logDensity(observations.get(0), mean, variance));
+
 		return Pair.of(weightUpdate, proposedParticle);
 	}
 
