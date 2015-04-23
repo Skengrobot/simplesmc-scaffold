@@ -22,7 +22,6 @@ public class SVProblemSpecification implements ProblemSpecification<Double> {
 			Random random, Double currentParticle) {
 		double proposedParticle = this.parameters.sampleTransition(random, currentParticle);
 		double weightUpdate = this.parameters.emissionLogPr(proposedParticle, observations.get(currentSmcIteration));
-		System.out.println( currentSmcIteration + ": Observation: " + observations.get(currentSmcIteration) + ", " + weightUpdate + ", " + proposedParticle);
 		return Pair.of(weightUpdate, proposedParticle);
 	}
 

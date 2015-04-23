@@ -35,7 +35,7 @@ public class TestSV {
 		Random random = new Random(1);
 		SVParams params = new SVParams();
 		
-		Pair<ArrayList<Double>, ArrayList<Double>> generated = SVUtils.generate(random, params, 20);
+		Pair<ArrayList<Double>, ArrayList<Double>> generated = SVUtils.generate(random, params, 500);
 		ArrayList<Double> observations = generated.getRight();
 		
 		SVProblemSpecification problem = new SVProblemSpecification(params, observations);
@@ -52,7 +52,7 @@ public class TestSV {
 		Random random = new Random(1);
 		SVParams params = new SVParams();
 		
-		Pair<ArrayList<Double>, ArrayList<Double>> generated = SVUtils.generateWithChangepoint(random, params, 20);
+		Pair<ArrayList<Double>, ArrayList<Double>> generated = SVUtils.generateWithChangepoint(random, params, 500);
 		ArrayList<Double> observations = generated.getRight();
 		
 		SVProblemSpecification problem = new SVProblemSpecification(params, observations);
