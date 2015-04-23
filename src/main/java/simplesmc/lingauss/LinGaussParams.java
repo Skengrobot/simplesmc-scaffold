@@ -95,6 +95,7 @@ public class LinGaussParams {
 	  MultivariateNormalDistribution dist = new MultivariateNormalDistribution(current, covariances);
 	  double emissionProb = Math.log(dist.density(next));
 	  
+	  System.out.println(emissionProb);
 	  return emissionProb;
   }
   
