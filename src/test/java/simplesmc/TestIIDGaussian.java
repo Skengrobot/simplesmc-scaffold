@@ -13,7 +13,7 @@ public class TestIIDGaussian {
 	@Test
 	public void testIIDGaussian() {
 		iidGaussianProblemSpecification problem = new iidGaussianProblemSpecification(
-			"/home/rudi/src/simplesmc-scaffold/data-generators/datasets/gauss-mix.csv", 0, 0.01);
+			"/home/rudi/src/simplesmc-scaffold/data-generators/datasets/gauss-mix.csv", 0, 0.1);
 	
 		SMCOptions options = new SMCOptions();
 		fancySMCalgorithm<Double> smc = new fancySMCalgorithm<>(problem, options, 10, 2);
