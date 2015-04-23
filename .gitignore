@@ -11,3 +11,4 @@ build
 commons-math3-3.4.1/*
 *.pyc
 *.csv
+octave-core
