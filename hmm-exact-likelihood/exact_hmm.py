@@ -1,22 +1,23 @@
 #!/usr/bin/python
 
 # A quick HMM model generator and exact data likelihood calculation script
+# experts agree that this is numerically pretty sketchy
 
 from pprint import pprint
 from numpy.random import uniform
 
+from pylab import *
+import math
+
 def forward_algorithm(observations, start, probabilities):
     likelihoods = []
     for i, obs in enumerate(observations):
-        print 'observation ' + str(obs)
         probs = []
         for state in range(5):
             if i == 0:
                 probs.append(start[state]*probabilities[start[state]][obs])
             else:
                 probs.append(sum([likelihoods[i-1][k]*probabilities[k][state] for k in range(5)]) * probabilities[state][obs])
-        print probs
-        print sum(probs)
         likelihoods.append(probs)
 
     return likelihoods
@@ -63,7 +64,18 @@ accumulated_mat = [[.8, 1, 1, 1, 1],[.1, .9, 1, 0, 0],[0, .1, .9, 1, 0],[0, 0, .
 mat4 = [[.6, .4, 0, 0, 0],[.2, .6, .2, 0, 0],[0, .2, .6, .2, 0],[0, 0, .2, .6, .2],[0, 0, 0, .4, .6]]
 accumulated_mat2 = [[.6, 1, 1, 1, 1],[.2, .8, 1, 0, 0],[0, .2, .8, 1, 0],[0, 0, .2, .8, 1],[0, 0, 0, .4, 1]]
 
-
-obs = generate_observations(100)
-
+obs = generate_observations(200)
 likes = forward_algorithm(obs, start, mat)
+
+samples = []
+sampling_interval = 5
+last_likelihood = 0
+for i in range(0, len(likes)-1, sampling_interval):
+    this_likelihood = math.log(sum([sum(likes[j]) for j in range(i, i+sampling_interval)]))
+    sample = this_likelihood - last_likelihood
+    last_likelihood = this_likelihood
+    samples.append(sample)
+
+ax = range(len(samples))
+plot(ax,samples)
+show()
