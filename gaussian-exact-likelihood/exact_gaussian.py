@@ -14,8 +14,8 @@ def iid_gauss_likelihood(mean, variance, obs_sum, obs_sumsq, n_obs):
 # construct data
 first_mean = 0
 first_variance = 0.001
-second_mean = .1
-second_variance = 0.001
+second_mean = 0
+second_variance = 0.005
 
 observations = []
 for i in range(1000):
@@ -37,4 +37,7 @@ plot_samples = [observations[i] for i in range(len(observations)) for j in range
 
 ax = range(len(samples))
 plot(ax,samples)
+title("IID Gaussian with changed variance from 0.001 to 0.005")
+xlabel("Samples")
+ylabel("Log Likelihood")
 show()

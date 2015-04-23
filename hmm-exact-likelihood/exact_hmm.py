@@ -61,8 +61,8 @@ accumulated_start = [0, 0, 1, 1, 1]
 mat = [[.8, .2, 0, 0, 0],[.1, .8, .1, 0, 0],[0, .1, .8, .1, 0],[0, 0, .1, .8, .1],[0, 0, 0, .2, .8]]
 accumulated_mat = [[.8, 1, 1, 1, 1],[.1, .9, 1, 0, 0],[0, .1, .9, 1, 0],[0, 0, .1, .9, 1],[0, 0, 0, .2, 1]]
 # becomes less sticky after change
-mat4 = [[.6, .4, 0, 0, 0],[.2, .6, .2, 0, 0],[0, .2, .6, .2, 0],[0, 0, .2, .6, .2],[0, 0, 0, .4, .6]]
-accumulated_mat2 = [[.6, 1, 1, 1, 1],[.2, .8, 1, 0, 0],[0, .2, .8, 1, 0],[0, 0, .2, .8, 1],[0, 0, 0, .4, 1]]
+#mat2 = [[.6, .4, 0, 0, 0],[.2, .6, .2, 0, 0],[0, .2, .6, .2, 0],[0, 0, .2, .6, .2],[0, 0, 0, .4, .6]]
+#accumulated_mat2 = [[.6, 1, 1, 1, 1],[.2, .8, 1, 0, 0],[0, .2, .8, 1, 0],[0, 0, .2, .8, 1],[0, 0, 0, .4, 1]]
 
 obs = generate_observations(200)
 likes = forward_algorithm(obs, start, mat)
@@ -78,4 +78,7 @@ for i in range(0, len(likes)-1, sampling_interval):
 
 ax = range(len(samples))
 plot(ax,samples)
+title("HMM with changed emission and transition probabilities")
+xlabel("Samples")
+ylabel("Log Likelihood")
 show()
