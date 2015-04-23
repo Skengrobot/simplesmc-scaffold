@@ -27,11 +27,12 @@ public class SVParams {
 	}
 	
 	public double sampleChangedTransition(Random random, double currentState) {
-		return 0;
+		double noise = 10*sigma * Normal.generate(random, 0, 1);
+		return alpha * currentState + noise;
 	}
 	  
 	public double emissionLogPr(double latentState, double emission) {
-		return Normal.logDensity(latentState, 0, beta*beta*Math.exp(latentState));
+		return Normal.logDensity(emission, 0, beta*beta*Math.exp(latentState));
 	}
 	
 	public double sampleEmission(Random random, double currentState) {

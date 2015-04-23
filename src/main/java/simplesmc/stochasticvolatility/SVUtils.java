@@ -26,4 +26,29 @@ public class SVUtils {
 		
 		return Pair.of(latents, observations);		
 	}
+	
+	public static Pair<ArrayList<Double>,ArrayList<Double>> generateWithChangepoint(Random random,
+			SVParams params, int length) {
+		ArrayList<Double> latents = new ArrayList<>();
+		ArrayList<Double> observations = new ArrayList<>();
+		
+		double currentLatent = params.sampleInitial(random);
+		double currentObs = params.sampleEmission(random, currentLatent);
+		latents.add(currentLatent);
+		observations.add(currentObs);
+		for (int iteration = 1; iteration<Math.floor(length/2); iteration++) {
+			currentLatent = params.sampleTransition(random, currentLatent);
+			currentObs = params.sampleEmission(random, currentLatent);
+			latents.add(currentLatent);
+			observations.add(currentObs);
+		}
+		for (int iteration = (int) Math.floor(length/2); iteration<length; iteration++) {
+			currentLatent = params.sampleChangedTransition(random, currentLatent);
+			currentObs = params.sampleEmission(random, currentLatent);
+			latents.add(currentLatent);
+			observations.add(currentObs);
+		}
+		
+		return Pair.of(latents, observations);		
+	}
 }
