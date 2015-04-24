@@ -19,7 +19,7 @@ import simplesmc.lingauss.LinGaussUtils;
 
 public class TestFancySMC {
 	
-	@Test
+	//@Test
 	public void testFancySMC() {
 		Random random = new Random(1);
 		ToyHMMParams hmmParams = new ToyHMMParams(5);

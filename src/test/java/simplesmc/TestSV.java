@@ -15,7 +15,7 @@ import simplesmc.stochasticvolatility.SVUtils;
 import java.util.Random;
 
 public class TestSV {
-	@Test
+	//@Test
 	public void testSV() {
 		Random random = new Random(1);
 		SVParams params = new SVParams();
@@ -30,7 +30,7 @@ public class TestSV {
 		System.out.println("estimate = " + smc.sample().logNormEstimate());
 	}
 	
-	@Test
+	//@Test
 	public void testSVFancySample() {
 		Random random = new Random(1);
 		SVParams params = new SVParams();
@@ -49,18 +49,21 @@ public class TestSV {
 	
 	@Test
 	public void testSVChangepoint() {
-		Random random = new Random(1);
+		Random random = new Random(5);
 		SVParams params = new SVParams();
 		
-		Pair<ArrayList<Double>, ArrayList<Double>> generated = SVUtils.generateWithChangepoint(random, params, 500);
+		System.out.println("GO!");
+		Pair<ArrayList<Double>, ArrayList<Double>> generated = SVUtils.generateWithChangepoint(random, params, 1000);
 		ArrayList<Double> observations = generated.getRight();
+		ArrayList<Double> state = generated.getLeft();
 		
 		SVProblemSpecification problem = new SVProblemSpecification(params, observations);
 		
 		SMCOptions options = new SMCOptions();
-		fancySMCalgorithm<Double> smc = new fancySMCalgorithm<>(problem , options, 10, 1);
+		fancySMCalgorithm<Double> smc = new fancySMCalgorithm<>(problem , options, 20, 1);
 		Pair<ParticlePopulation<Double>, ArrayList<Double>> output = smc.fancySample();
 		System.out.println("Final log likelihood = " + output.getLeft().logNormEstimate());
+		
 	}
 	
 }
