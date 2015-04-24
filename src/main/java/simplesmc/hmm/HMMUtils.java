@@ -59,12 +59,14 @@ public class HMMUtils
         params.sampleInitial(random) : 
         params.sampleTransition(random, Iterables.getLast(latents));
       int currentObs = params.sampleEmission(random, currentLatent);
+      System.out.println(currentLatent + "," + currentObs);
       latents.add(currentLatent);
       observations.add(currentObs);
     }
     for (int iteration = (int) Math.floor(length/2); iteration < length; iteration++) {
       int currentLatent = params.sampleChangedTransition(random, Iterables.getLast(latents));
       int currentObs = params.sampleEmission(random, currentLatent);
+      System.out.println(currentLatent + "," + currentObs);
       latents.add(currentLatent);
       observations.add(currentObs);
     }
