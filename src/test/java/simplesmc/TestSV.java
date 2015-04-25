@@ -15,12 +15,12 @@ import simplesmc.stochasticvolatility.SVUtils;
 import java.util.Random;
 
 public class TestSV {
-	//@Test
+	@Test
 	public void testSV() {
 		Random random = new Random(1);
 		SVParams params = new SVParams();
 		
-		Pair<ArrayList<Double>, ArrayList<Double>> generated = SVUtils.generate(random, params, 20);
+		Pair<ArrayList<Double>, ArrayList<Double>> generated = SVUtils.generateWithChangepoint(random, params, 10000);
 		ArrayList<Double> observations = generated.getRight();
 		
 		SVProblemSpecification problem = new SVProblemSpecification(params, observations);
@@ -30,21 +30,20 @@ public class TestSV {
 		System.out.println("estimate = " + smc.sample().logNormEstimate());
 	}
 	
-	//@Test
+	@Test
 	public void testSVFancySample() {
 		Random random = new Random(1);
 		SVParams params = new SVParams();
 		
-		Pair<ArrayList<Double>, ArrayList<Double>> generated = SVUtils.generate(random, params, 500);
+		Pair<ArrayList<Double>, ArrayList<Double>> generated = SVUtils.generate(random, params, 10000);
 		ArrayList<Double> observations = generated.getRight();
 		
 		SVProblemSpecification problem = new SVProblemSpecification(params, observations);
 		
 		SMCOptions options = new SMCOptions();
-		fancySMCalgorithm<Double> smc = new fancySMCalgorithm<>(problem , options, 10, 1);
+		fancySMCalgorithm<Double> smc = new fancySMCalgorithm<>(problem , options, 100, 1);
 		Pair<ParticlePopulation<Double>, ArrayList<Double>> output = smc.fancySample();
 		System.out.println("Final log likelihood = " + output.getLeft().logNormEstimate());
-		System.out.println();
 	}
 	
 	@Test
@@ -52,15 +51,14 @@ public class TestSV {
 		Random random = new Random(5);
 		SVParams params = new SVParams();
 		
-		System.out.println("GO!");
-		Pair<ArrayList<Double>, ArrayList<Double>> generated = SVUtils.generateWithChangepoint(random, params, 1000);
+		Pair<ArrayList<Double>, ArrayList<Double>> generated = SVUtils.generateWithChangepoint(random, params, 10000);
 		ArrayList<Double> observations = generated.getRight();
 		ArrayList<Double> state = generated.getLeft();
 		
 		SVProblemSpecification problem = new SVProblemSpecification(params, observations);
 		
 		SMCOptions options = new SMCOptions();
-		fancySMCalgorithm<Double> smc = new fancySMCalgorithm<>(problem , options, 20, 1);
+		fancySMCalgorithm<Double> smc = new fancySMCalgorithm<>(problem , options, 100, 1);
 		Pair<ParticlePopulation<Double>, ArrayList<Double>> output = smc.fancySample();
 		System.out.println("Final log likelihood = " + output.getLeft().logNormEstimate());
 		

@@ -13,10 +13,8 @@ public class fancySMCutils {
 	public static void printQueue(LinkedList<Double> q){
 		double total = 0;
 		for (Double item : q) {
-			System.out.print(item);
-			System.out.print(',');
+			System.out.println(item);
 			total += item;
 		}
-		System.out.println(" Total: " + total);
 	}
 }
