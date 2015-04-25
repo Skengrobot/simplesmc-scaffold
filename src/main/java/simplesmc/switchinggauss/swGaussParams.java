@@ -49,7 +49,7 @@ public class swGaussParams {
 	public Pair<Integer, Double> sampleChangedTransition(Random random, Pair<Integer, Double> currentState) {
 		// Sample Markov chain transition
 		int nextmc;
-		if (Bernoulli.generate(random, selfTransition))
+		if (Bernoulli.generate(random, 1-selfTransition))
 			nextmc = currentState.getLeft();
 		else
 			nextmc = Math.abs(1-currentState.getLeft()); // because java can't convert from int to bool
@@ -64,7 +64,7 @@ public class swGaussParams {
 	}
 	
 	public double sampleEmission(Random random, Pair<Integer, Double> state) {
-		return Normal.generate(random, 0, var);
+		return Normal.generate(random, transition[state.getLeft()] * state.getRight(), var);
 	}
 	
 	
